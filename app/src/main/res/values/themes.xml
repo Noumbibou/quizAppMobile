@@ -1,0 +1,44 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.QuizApp_Fomin_G2Roudani" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+    </style>
+
+    <style name="Theme.QuizApp_Fomin_G2Roudani" parent="Base.Theme.QuizApp_Fomin_G2Roudani" />
+
+    <style name="Theme.QuizApp" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorOnPrimary">@color/on_primary</item>
+        <item name="android:windowBackground">@color/background</item>
+        <item name="colorPrimaryContainer">@color/secondary</item>
+
+        <!-- Style par défaut des champs de saisie -->
+        <item name="textInputStyle">@style/Widget.Material3.TextInputLayout.OutlinedBox</item>
+        <!-- Forme arrondie M3 -->
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.QuizApp.LargeComponent
+        </item>
+    </style>
+
+    <style name="ShapeAppearance.QuizApp.LargeComponent"
+        parent="ShapeAppearance.Material3.LargeComponent">
+        <item name="cornerSize">12dp</item>
+    </style>
+
+    <!-- Thème spécial pour le démarrage -->
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <!-- L'image au centre (votre logo) -->
+        <item name="windowSplashScreenAnimatedIcon">@drawable/javalogo</item>
+        <!-- La couleur de fond derrière le logo -->
+        <item name="windowSplashScreenBackground">@color/background</item>
+        <!-- Thème vers lequel basculer après le chargement -->
+        <item name="postSplashScreenTheme">@style/Theme.QuizApp_Fomin_G2Roudani</item>
+    </style>
+
+    <!-- <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <!- Utilise logo.png qui est plus compatible -->
+        
+    <!-- <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenAnimatedIcon">@drawable/logo</item>
+        <item name="windowSplashScreenBackground">@color/background</item>
+        <!- On bascule vers le thème normal de l'app après le splash -->
+        </resources>

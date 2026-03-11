@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">QuizApp_Fomin_G2Roudani</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="login_title">Se connecter</string>
+    <string name="login_subtitle">Prêt à tester vos connaissances en POO ?</string>
+    <string name="register_title">Créer un compte</string>
+    <string name="register_subtitle">Rejoignez la communauté des développeurs Java</string>
+
+    <string name="hint_nom">Nom complet</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Mot de passe</string>
+    <string name="hint_confirm_password">Confirmer le mot de passe</string>
+
+    <string name="btn_login">Se connecter</string>
+    <string name="btn_google">Continuer avec Google</string>
+    <string name="btn_register">S\'inscrire</string>
+    <string name="link_to_register">Pas de compte ? Inscrivez-vous</string>
+    <string name="link_to_login">Déjà inscrit ? Connectez-vous</string>
+
+    <string name="error_email">Email invalide</string>
+    <string name="error_password_short">6 caractères minimum</string>
+    <string name="error_password_match">Les mots de passe ne correspondent pas</string>
+    <string name="error_field_required">Ce champ est requis</string>
+
+    <!-- <string name="app_name">Quiz Java POO</string> -->
+
+    <!-- <string name="app_name">Quiz Java POO</string> -->
+</resources>
