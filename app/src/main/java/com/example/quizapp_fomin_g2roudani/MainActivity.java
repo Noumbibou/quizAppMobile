@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void goToQuiz() {
-        startActivity(new Intent(MainActivity.this, Quiz1.class));
+        startActivity(new Intent(MainActivity.this, SelectLevel.class));
         finish();
     }
 

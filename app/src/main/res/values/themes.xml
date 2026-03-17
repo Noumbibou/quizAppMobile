@@ -41,4 +41,16 @@
         <item name="windowSplashScreenAnimatedIcon">@drawable/logo</item>
         <item name="windowSplashScreenBackground">@color/background</item>
         <!- On bascule vers le thème normal de l'app après le splash -->
-        </resources>
+        
+    <!-- Thème principal de l'application -->
+    <!-- <style name="Base.Theme.QuizApp_Fomin_G2Roudani" parent="Theme.Material3.DayNight.NoActionBar">
+        <!- COULEURS PRINCIPALES : C'est ce qui définit la couleur des boutons -->
+        
+
+    <!-- Thème de démarrage (Splash Screen) -->
+    <!-- <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenAnimatedIcon">@drawable/logo</item>
+        <item name="windowSplashScreenBackground">@color/background</item>
+        <item name="postSplashScreenTheme">@style/Theme.QuizApp_Fomin_G2Roudani</item>
+    </style> -->
+</resources>

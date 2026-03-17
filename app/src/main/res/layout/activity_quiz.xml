@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fillViewport="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp"
+    android:background="@color/background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <!-- En-tête -->
+        <TextView
+            android:id="@+id/tvLevel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Niveau: -"
+            android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
+            android:textStyle="bold"
+            android:textColor="@color/on_surface_variant"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/tvCounter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Question 1 / 50"
+            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+            android:textStyle="bold"
+            android:textColor="@color/on_surface"
+            android:layout_marginBottom="8dp" />
+
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/progressBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:trackThickness="8dp"
+            app:trackCornerRadius="4dp"
+            android:max="50"
+            android:progress="0"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Énoncé -->
+        <TextView
+            android:id="@+id/tvQuestion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Énoncé de la question…"
+            android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
+            android:textColor="@color/on_surface"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Options -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnA"
+            style="@style/Widget.Material3.Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="A) ..."
+            android:layout_marginBottom="12dp"
+            android:padding="16dp"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/primary"
+            android:textAlignment="viewStart" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnB"
+            style="@style/Widget.Material3.Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="B) ..."
+            android:layout_marginBottom="12dp"
+            android:padding="16dp"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/primary"
+
+            android:textAlignment="viewStart" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnC"
+            style="@style/Widget.Material3.Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="C) ..."
+            android:layout_marginBottom="12dp"
+            android:padding="16dp"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/primary"
+            android:textAlignment="viewStart" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnD"
+            style="@style/Widget.Material3.Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="D) ..."
+            android:layout_marginBottom="12dp"
+            android:padding="16dp"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/primary"
+            android:textAlignment="viewStart" />
+
+        <!-- Bouton Suivant -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnNext"
+            style="@style/Widget.Material3.Button.TonalButton"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="Suivant"
+            android:enabled="false"
+            android:layout_marginTop="12dp"
+            app:cornerRadius="12dp" />
+
+        <!-- Loader -->
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/loader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:layout_marginTop="20dp"
+            android:visibility="gone" />
+
+    </LinearLayout>
+</ScrollView>
