@@ -4,16 +4,22 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.TextUtils;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.quizapp_fomin_g2roudani.models.Question;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -25,23 +31,35 @@ import java.util.List;
 
 public class Quiz extends AppCompatActivity {
 
-    private TextView tvLevel, tvCounter, tvQuestion;
+    private TextView tvLevel, tvCounter, tvQuestion, tvTimer;
     private MaterialButton btnA, btnB, btnC, btnD, btnNext;
     private ProgressBar progressBar, loader;
+    private CircularProgressIndicator timerProgress;
+    private View quizContainer, timerContainer;
 
     private final List<Question> questions = new ArrayList<>();
     private int currentQuestionIndex = 0;
     private int score = 0;
     private String level;
+    private String userSelectedAnswer = "";
 
-    // NOTE: on n’interdit plus de recliquer. On garde simplement la DERNIÈRE réponse choisie.
-    private String userSelectedAnswer = ""; // "A" | "B" | "C" | "D"
+    private CountDownTimer countDownTimer;
+    private static final long TIME_LIMIT = 20000; // 20 secondes
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_quiz);
+
+        // Gestion du bouton retour avec OnBackPressedDispatcher
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+            }
+        });
 
         bindViews();
 
@@ -60,6 +78,10 @@ public class Quiz extends AppCompatActivity {
         tvLevel = findViewById(R.id.tvLevel);
         tvCounter = findViewById(R.id.tvCounter);
         tvQuestion = findViewById(R.id.tvQuestion);
+        tvTimer = findViewById(R.id.tvTimer);
+        quizContainer = findViewById(R.id.quizContainer);
+        timerContainer = findViewById(R.id.timerContainer);
+        timerProgress = findViewById(R.id.timerProgress);
 
         btnA = findViewById(R.id.btnA);
         btnB = findViewById(R.id.btnB);
@@ -70,7 +92,6 @@ public class Quiz extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         loader = findViewById(R.id.loader);
 
-        // NOTE: on autorise le changement de réponse => pas de blocage
         btnA.setOnClickListener(v -> onOptionClicked("A", btnA));
         btnB.setOnClickListener(v -> onOptionClicked("B", btnB));
         btnC.setOnClickListener(v -> onOptionClicked("C", btnC));
@@ -79,8 +100,45 @@ public class Quiz extends AppCompatActivity {
         btnNext.setOnClickListener(v -> goNext());
     }
 
+    private void startCountdown() {
+        if (countDownTimer != null) countDownTimer.cancel();
+
+        timerProgress.setIndicatorColor(Color.parseColor("#2962FF")); // Primary Blue
+        tvTimer.setTextColor(Color.parseColor("#2962FF"));
+
+        countDownTimer = new CountDownTimer(TIME_LIMIT, 10) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                int seconds = (int) (millisUntilFinished / 1000);
+                tvTimer.setText(String.valueOf(seconds));
+                timerProgress.setProgress((int) (millisUntilFinished / 10));
+
+                if (seconds <= 5) {
+                    timerProgress.setIndicatorColor(Color.RED);
+                    tvTimer.setTextColor(Color.RED);
+                }
+            }
+
+            @Override
+            public void onFinish() {
+                tvTimer.setText("0");
+                timerProgress.setProgress(0);
+
+                Animation shake = AnimationUtils.loadAnimation(Quiz.this, R.anim.shake);
+                timerContainer.startAnimation(shake);
+
+                Toast.makeText(Quiz.this, "Temps écoulé !", Toast.LENGTH_SHORT).show();
+                goNext();
+            }
+        }.start();
+    }
+
+    private void stopCountdown() {
+        if (countDownTimer != null) countDownTimer.cancel();
+    }
+
     private void goNext() {
-        // NOTE: on compte le point uniquement à la validation (Suivant)
+        stopCountdown();
         Question q = questions.get(currentQuestionIndex);
         if (!TextUtils.isEmpty(userSelectedAnswer) &&
                 userSelectedAnswer.equalsIgnoreCase(q.getCorrectAnswer())) {
@@ -90,34 +148,44 @@ public class Quiz extends AppCompatActivity {
         currentQuestionIndex++;
 
         if (currentQuestionIndex >= questions.size()) {
-            // Fin du quiz
             Intent i = new Intent(this, Score.class);
             i.putExtra("score", score);
             i.putExtra("total", questions.size());
             i.putExtra(SelectLevel.EXTRA_LEVEL, level);
             startActivity(i);
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             finish();
         } else {
-            showQuestion(currentQuestionIndex);
+            quizContainer.animate().alpha(0f).translationX(-100f).setDuration(250).withEndAction(() -> {
+                showQuestion(currentQuestionIndex);
+                quizContainer.setTranslationX(100f);
+                quizContainer.animate().alpha(1f).translationX(0f).setDuration(250).start();
+            }).start();
         }
     }
 
     private void onOptionClicked(String userChoice, MaterialButton clickedBtn) {
-        // NOTE: On mémorise simplement la DERNIÈRE réponse choisie
+        stopCountdown();
         userSelectedAnswer = userChoice;
 
-        // Reset des styles (enlever le vert précédent)
         resetButtonStyle(btnA);
         resetButtonStyle(btnB);
         resetButtonStyle(btnC);
         resetButtonStyle(btnD);
 
-        // NOTE: couleur verte quand sélectionné avec texte blanc
-        clickedBtn.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#22C55E"))); 
+        clickedBtn.animate().scaleX(1.05f).scaleY(1.05f).setDuration(100).withEndAction(() ->
+                clickedBtn.animate().scaleX(1.0f).scaleY(1.0f).start()
+        ).start();
+
+        clickedBtn.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#1B5E20"))); // Success Green
         clickedBtn.setTextColor(Color.WHITE);
 
-        // NOTE: activer "Suivant" dès qu’un choix est fait
-        btnNext.setEnabled(true);
+        if (!btnNext.isEnabled()) {
+            btnNext.setEnabled(true);
+            btnNext.setAlpha(0f);
+            btnNext.setTranslationY(20f);
+            btnNext.animate().alpha(1f).translationY(0f).setDuration(300).start();
+        }
     }
 
     private String levelLabel(String lvl) {
@@ -131,13 +199,11 @@ public class Quiz extends AppCompatActivity {
 
     private void fetchQuestions(String lvl) {
         showLoading(true);
-
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference qRef = db.collection("questions").document(lvl).collection("qList");
 
         qRef.get().addOnCompleteListener(task -> {
             showLoading(false);
-
             if (!task.isSuccessful() || task.getResult() == null) {
                 Toast.makeText(this, "Erreur lors du chargement des questions", Toast.LENGTH_SHORT).show();
                 finish();
@@ -149,30 +215,19 @@ public class Quiz extends AppCompatActivity {
                 documents.add(document);
             }
 
-            // NOTE: tri par id q1..q50 si présent
-            Collections.sort(
-                    documents,
-                    Comparator.comparing(
-                            QueryDocumentSnapshot::getId,
-                            (a, b) -> {
-                                try {
-                                    int ai = Integer.parseInt(a.replaceAll("\\D+", ""));
-                                    int bi = Integer.parseInt(b.replaceAll("\\D+", ""));
-                                    return Integer.compare(ai, bi);
-                                } catch (Exception e) {
-                                    return a.compareTo(b);
-                                }
-                            }
-                    )
-            );
+            Collections.sort(documents, Comparator.comparing(QueryDocumentSnapshot::getId, (a, b) -> {
+                try {
+                    int ai = Integer.parseInt(a.replaceAll("\\D+", ""));
+                    int bi = Integer.parseInt(b.replaceAll("\\D+", ""));
+                    return Integer.compare(ai, bi);
+                } catch (Exception e) { return a.compareTo(b); }
+            }));
 
             for (QueryDocumentSnapshot d : documents) {
                 Question q = d.toObject(Question.class);
-                if (q.getCorrectAnswer() == null) continue; // sécurité
-                questions.add(q);
+                if (q.getCorrectAnswer() != null) questions.add(q);
             }
 
-            // NOTE: Cette partie était dans la boucle chez toi -> bug de multiples appels
             if (questions.isEmpty()) {
                 Toast.makeText(this, "Aucune question trouvée", Toast.LENGTH_SHORT).show();
                 finish();
@@ -184,11 +239,10 @@ public class Quiz extends AppCompatActivity {
     }
 
     private void showLoading(boolean show) {
-        loader.setVisibility(show ? android.view.View.VISIBLE : android.view.View.GONE);
+        loader.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     private void showQuestion(int index) {
-        // Reset état sélection et UI
         userSelectedAnswer = "";
         btnNext.setEnabled(false);
 
@@ -206,13 +260,20 @@ public class Quiz extends AppCompatActivity {
 
         tvCounter.setText("Question " + (index + 1) + " / " + questions.size());
         progressBar.setProgress(index);
+
+        startCountdown();
     }
 
     private void resetButtonStyle(MaterialButton b) {
         b.setEnabled(true);
-        // Force le bleu primaire et texte blanc au lieu du noir/gris
-        b.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#1E40AF"))); 
+        b.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#2962FF"))); // Primary Blue
         b.setTextColor(Color.WHITE);
         b.setStrokeWidth(0);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopCountdown();
     }
 }

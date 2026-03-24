@@ -2,197 +2,201 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SelectLevel"
     android:fillViewport="true"
-    android:padding="10dp"
-    android:background="@color/white">
+    android:background="@color/background">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:layout_margin="20dp">
+        android:layout_height="wrap_content"
+        android:padding="24dp">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/tvTitle"
-            android:text="Choisis ton niveau"
-            android:textSize="26sp"
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            android:layout_marginTop="20dp" />
-
-        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="Choisis ton niveau"
+            android:textAppearance="@style/TextAppearance.Material3.HeadlineLarge"
+            android:textStyle="bold"
+            android:textColor="@color/on_surface"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
             android:id="@+id/tvSubtitle"
-            android:text="Quiz : Programmation Orientée Objet en java"
-            android:textSize="14sp"
-            android:textColor="#777"
-            android:layout_marginTop="30dp" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Quiz : Programmation Orientée Objet en Java"
+            android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
+            android:textColor="@color/on_surface_variant"
+            app:layout_constraintTop_toBottomOf="@id/tvTitle"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <!-- Carte Debutant -->
         <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="140dp"
-            android:layout_marginTop="40sp"
             android:id="@+id/cardBeginner"
-            app:cardElevation="35dp"
-            app:cardCornerRadius="20sp"
-            android:backgroundTint="@color/white">
+            style="@style/Widget.Material3.CardView.Elevated"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            app:cardCornerRadius="24dp"
+            app:layout_constraintTop_toBottomOf="@id/tvSubtitle">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="20dp"
-                android:gravity="center_vertical"
-                tools:ignore="ExtraText">
+                android:padding="24dp"
+                android:gravity="center_vertical">
 
                 <ImageView
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:contentDescription="@string/cd_level_beginner"
-                    app:srcCompat="@drawable/ic_level_beginner"
-                    app:tint="#2962FF" />
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:src="@drawable/logo"
+                    app:tint="@color/primary" />
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:orientation="vertical"
                     android:layout_marginStart="20dp">
 
                     <TextView
-                        android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:text="Debutant"
-                        android:textSize="20sp"
+                        android:layout_height="wrap_content"
+                        android:text="Débutant"
+                        android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
                         android:textStyle="bold"
-                        android:textColor="@color/black" />
+                        android:textColor="@color/on_surface" />
 
                     <TextView
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:text="50 questions faciles"
-                    android:textSize="14sp"
-                    android:textColor="#777" />
-
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="50 questions faciles"
+                        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                        android:textColor="@color/on_surface_variant" />
                 </LinearLayout>
 
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@android:drawable/ic_media_play"
+                    app:tint="@color/primary" />
             </LinearLayout>
-
         </com.google.android.material.card.MaterialCardView>
 
         <!-- Carte Intermediaire -->
         <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="140dp"
-            android:layout_marginTop="40sp"
             android:id="@+id/cardIntermediate"
-            app:cardElevation="35dp"
-            app:cardCornerRadius="20sp"
-            android:backgroundTint="@color/white">
+            style="@style/Widget.Material3.CardView.Elevated"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="24dp"
+            app:layout_constraintTop_toBottomOf="@id/cardBeginner">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="20dp"
+                android:padding="24dp"
                 android:gravity="center_vertical">
 
-
                 <ImageView
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:contentDescription="@string/cd_level_intermediate"
-                    app:srcCompat="@drawable/ic_level_intermediate"
-                    app:tint="#FF9800" />
-
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:src="@drawable/logo"
+                    app:tint="@color/secondary" />
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:orientation="vertical"
                     android:layout_marginStart="20dp">
 
                     <TextView
-                        android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:text="Intermédiaire"
-                        android:textSize="20sp"
+                        android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
                         android:textStyle="bold"
-                        android:textColor="@color/black" />
+                        android:textColor="@color/on_surface" />
 
                     <TextView
-                        android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:text="50 questions intermédiaires"
-                        android:textSize="14sp"
-                        android:textColor="#777" />
-
+                        android:layout_height="wrap_content"
+                        android:text="50 questions moyennes"
+                        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                        android:textColor="@color/on_surface_variant" />
                 </LinearLayout>
 
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@android:drawable/ic_media_play"
+                    app:tint="@color/secondary" />
             </LinearLayout>
-
         </com.google.android.material.card.MaterialCardView>
-
 
         <!-- Carte Avance -->
         <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="140dp"
-            android:layout_marginTop="40sp"
-            app:cardElevation="35dp"
             android:id="@+id/cardAdvanced"
-            app:cardCornerRadius="20sp"
-            android:backgroundTint="@color/white">
+            style="@style/Widget.Material3.CardView.Elevated"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="32dp"
+            app:cardCornerRadius="24dp"
+            app:layout_constraintTop_toBottomOf="@id/cardIntermediate">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="20dp"
+                android:padding="24dp"
                 android:gravity="center_vertical">
 
                 <ImageView
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:contentDescription="@string/cd_level_advanced"
-                    app:srcCompat="@drawable/ic_level_advanced"
-                    app:tint="#D32F2F" />
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:src="@drawable/logo"
+                    app:tint="@color/error" />
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:orientation="vertical"
                     android:layout_marginStart="20dp">
 
                     <TextView
-                        android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:text="Avancé"
-                        android:textSize="20sp"
+                        android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
                         android:textStyle="bold"
-                        android:textColor="@color/black" />
+                        android:textColor="@color/on_surface" />
 
                     <TextView
-                        android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:text="50 questions avancées"
-                        android:textSize="14sp"
-                        android:textColor="#777" />
-
+                        android:layout_height="wrap_content"
+                        android:text="50 questions difficiles"
+                        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                        android:textColor="@color/on_surface_variant" />
                 </LinearLayout>
 
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@android:drawable/ic_media_play"
+                    app:tint="@color/error" />
             </LinearLayout>
-
         </com.google.android.material.card.MaterialCardView>
 
-    </LinearLayout>
-
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

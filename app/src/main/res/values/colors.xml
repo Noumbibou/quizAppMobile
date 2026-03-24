@@ -2,22 +2,30 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <!-- Palette Primaire (Indigo/Blue) -->
-    <color name="primary">#1E40AF</color>
-    <color name="primary_variant">#1E3A8A</color>
+
+    <!-- Palette Primaire (Material 3) -->
+    <color name="primary">#2962FF</color>
     <color name="on_primary">#FFFFFF</color>
+    <color name="primary_container">#D7E2FF</color>
+    <color name="on_primary_container">#001A68</color>
 
-    <!-- Palette Secondaire & Accent -->
-    <color name="secondary">#2962FF</color>
-    <color name="accent_success">#22C55E</color>
-    <color name="accent_error">#EF4444</color>
+    <!-- Palette Secondaire (Orange) -->
+    <color name="secondary">#FF9800</color>
+    <color name="on_secondary">#FFFFFF</color>
+    <color name="secondary_container">#FFDDB3</color>
+    <color name="on_secondary_container">#291800</color>
 
-    <!-- Couleurs de fond (Light Mode) -->
+    <!-- États & Accents -->
+    <color name="error">#D32F2F</color>
+    <color name="on_error">#FFFFFF</color>
+    <color name="success">#1B5E20</color>
+    <color name="on_success">#FFFFFF</color>
+
+    <!-- Surfaces -->
     <color name="background">#F8FAFC</color>
     <color name="surface">#FFFFFF</color>
     <color name="on_surface">#0F172A</color>
+    <color name="surface_variant">#E2E8F0</color>
     <color name="on_surface_variant">#64748B</color>
-
-    <!-- Google Brand Color -->
-    <color name="google_red">#DB4437</color>
+    <color name="outline">#CBD5E1</color>
 </resources>
