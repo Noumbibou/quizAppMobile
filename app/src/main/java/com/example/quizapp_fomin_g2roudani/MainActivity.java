@@ -3,6 +3,7 @@ package com.example.quizapp_fomin_g2roudani;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.TextView;
@@ -13,6 +14,8 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.quizapp_fomin_g2roudani.network.ApiClient;
+import com.example.quizapp_fomin_g2roudani.network.AuthApi;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -26,6 +29,13 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
+
+import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -50,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
         // 1. Auto-login : Si déjà connecté, go Quiz1
         if (mAuth.getCurrentUser() != null) {
-            goToQuiz();
+            fetchFirebaseIdTokenAndContinue();
         }
 
         // Initialisation des vues
@@ -99,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
                 .addOnCompleteListener(this, task -> {
                     setLoading(false);
                     if (task.isSuccessful()) {
-                        goToQuiz();
+                        fetchFirebaseIdTokenAndContinue();
                     } else {
                         Toast.makeText(MainActivity.this, "Erreur : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
@@ -136,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
                 .addOnCompleteListener(this, task -> {
                     setLoading(false);
                     if (task.isSuccessful()) {
-                        goToQuiz();
+                        fetchFirebaseIdTokenAndContinue();
                     } else {
                         Toast.makeText(MainActivity.this, "Authentification Google échouée", Toast.LENGTH_SHORT).show();
                     }
@@ -158,5 +168,51 @@ public class MainActivity extends AppCompatActivity {
         btnGoogle.setEnabled(!isLoading);
         etMail.setEnabled(!isLoading);
         etPassword.setEnabled(!isLoading);
+    }
+
+
+    private void fetchFirebaseIdTokenAndContinue() {
+
+        FirebaseAuth.getInstance()
+                .getCurrentUser()
+                .getIdToken(true)
+                .addOnSuccessListener(result -> {
+
+                    String firebaseIdToken = result.getToken();
+                    Log.e("FIREBASE_ID_TOKEN", firebaseIdToken);
+
+                    Retrofit retrofit = ApiClient.getClient(firebaseIdToken);
+                    AuthApi authApi = retrofit.create(AuthApi.class);
+
+                    authApi.getMe().enqueue(new Callback<Map<String, Object>>() {
+
+                        @Override
+                        public void onResponse(Call<Map<String, Object>> call,
+                                               Response<Map<String, Object>> response) {
+
+                            if (response.isSuccessful()) {
+                                Log.e("FASTAPI_TEST", "RESPONSE = " + response.body());
+
+                                // ✅ NAVIGATION ICI SEULEMENT
+                                goToQuiz();
+                            } else {
+                                Log.e("FASTAPI_TEST", "HTTP ERROR " + response.code());
+                                Toast.makeText(MainActivity.this,
+                                        "Erreur FastAPI", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Map<String, Object>> call, Throwable t) {
+                            Log.e("FASTAPI_ERROR", "BACKEND INDISPONIBLE", t);
+                            Toast.makeText(MainActivity.this,
+                                    "Backend indisponible", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("FIREBASE_ID_TOKEN", "TOKEN ERROR", e);
+                });
     }
 }

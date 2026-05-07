@@ -9,7 +9,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.quizapp_fomin_g2roudani.models.Question;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -33,7 +33,8 @@ public class Quiz extends AppCompatActivity {
 
     private TextView tvLevel, tvCounter, tvQuestion, tvTimer;
     private MaterialButton btnA, btnB, btnC, btnD, btnNext;
-    private ProgressBar progressBar, loader;
+    private LinearProgressIndicator progressBar;
+    private CircularProgressIndicator loader;
     private CircularProgressIndicator timerProgress;
     private View quizContainer, timerContainer;
 
@@ -63,7 +64,10 @@ public class Quiz extends AppCompatActivity {
 
         bindViews();
 
-        level = getIntent().getStringExtra(SelectLevel.EXTRA_LEVEL);
+        if (getIntent() != null) {
+            level = getIntent().getStringExtra(SelectLevel.EXTRA_LEVEL);
+        }
+
         if (TextUtils.isEmpty(level)) {
             Toast.makeText(this, "Niveau introuvable", Toast.LENGTH_SHORT).show();
             finish();
@@ -125,7 +129,9 @@ public class Quiz extends AppCompatActivity {
                 timerProgress.setProgress(0);
 
                 Animation shake = AnimationUtils.loadAnimation(Quiz.this, R.anim.shake);
-                timerContainer.startAnimation(shake);
+                if (timerContainer != null) {
+                    timerContainer.startAnimation(shake);
+                }
 
                 Toast.makeText(Quiz.this, "Temps écoulé !", Toast.LENGTH_SHORT).show();
                 goNext();
@@ -139,6 +145,9 @@ public class Quiz extends AppCompatActivity {
 
     private void goNext() {
         stopCountdown();
+        
+        if (questions.isEmpty() || currentQuestionIndex >= questions.size()) return;
+
         Question q = questions.get(currentQuestionIndex);
         if (!TextUtils.isEmpty(userSelectedAnswer) &&
                 userSelectedAnswer.equalsIgnoreCase(q.getCorrectAnswer())) {
@@ -189,6 +198,7 @@ public class Quiz extends AppCompatActivity {
     }
 
     private String levelLabel(String lvl) {
+        if (lvl == null) return "";
         switch (lvl) {
             case SelectLevel.LEVEL_BEGINNER: return "Débutant";
             case SelectLevel.LEVEL_INTERMEDIATE: return "Intermédiaire";
@@ -223,9 +233,12 @@ public class Quiz extends AppCompatActivity {
                 } catch (Exception e) { return a.compareTo(b); }
             }));
 
+            questions.clear();
             for (QueryDocumentSnapshot d : documents) {
                 Question q = d.toObject(Question.class);
-                if (q.getCorrectAnswer() != null) questions.add(q);
+                if (q != null && q.getCorrectAnswer() != null) {
+                    questions.add(q);
+                }
             }
 
             if (questions.isEmpty()) {
@@ -239,10 +252,14 @@ public class Quiz extends AppCompatActivity {
     }
 
     private void showLoading(boolean show) {
-        loader.setVisibility(show ? View.VISIBLE : View.GONE);
+        if (loader != null) {
+            loader.setVisibility(show ? View.VISIBLE : View.GONE);
+        }
     }
 
     private void showQuestion(int index) {
+        if (index < 0 || index >= questions.size()) return;
+        
         userSelectedAnswer = "";
         btnNext.setEnabled(false);
 
@@ -265,6 +282,7 @@ public class Quiz extends AppCompatActivity {
     }
 
     private void resetButtonStyle(MaterialButton b) {
+        if (b == null) return;
         b.setEnabled(true);
         b.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#2962FF"))); // Primary Blue
         b.setTextColor(Color.WHITE);
