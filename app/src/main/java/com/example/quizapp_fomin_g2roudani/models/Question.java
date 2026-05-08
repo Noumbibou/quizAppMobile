@@ -1,23 +1,29 @@
 package com.example.quizapp_fomin_g2roudani.models;
 
 public class Question {
+    private int id;
     private String question;
     private String optionA;
     private String optionB;
     private String optionC;
     private String optionD;
-    private String CorrectAnswer;
-
     public Question(){}
-    public Question(String question, String optionA, String optionB, String optionC, String optionD, String correctAnswer) {
+    public Question(int id, String question, String optionA, String optionB, String optionC, String optionD) {
         this.question = question;
         this.optionA = optionA;
         this.optionB = optionB;
         this.optionC = optionC;
         this.optionD = optionD;
-        CorrectAnswer = correctAnswer;
+        this.id = id;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
     public String getQuestion() {
         return question;
     }
@@ -56,13 +62,5 @@ public class Question {
 
     public void setOptionD(String optionD) {
         this.optionD = optionD;
-    }
-
-    public String getCorrectAnswer() {
-        return CorrectAnswer;
-    }
-
-    public void setCorrectAnswer(String correctAnswer) {
-        CorrectAnswer = correctAnswer;
     }
 }

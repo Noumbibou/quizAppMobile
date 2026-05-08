@@ -11,11 +11,9 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.quizapp_fomin_g2roudani.network.ApiClient;
-import com.example.quizapp_fomin_g2roudani.network.AuthApi;
+import com.example.quizapp_fomin_g2roudani.auth.AuthTokenManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -30,14 +28,9 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-import java.util.Map;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = "MainActivityAuth";
 
     private TextInputLayout tilEmail, tilPassword;
     private TextInputEditText etMail, etPassword;
@@ -50,20 +43,26 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // Splash Screen (doit être avant super.onCreate)
         androidx.core.splashscreen.SplashScreen.installSplashScreen(this);
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         mAuth = FirebaseAuth.getInstance();
 
-        // 1. Auto-login : Si déjà connecté, go Quiz1
+        initViews();
+        setupGoogleSignIn();
+
+        // ✅ AUTO‑LOGIN PROPRE (SANS APPEL BACKEND)
         if (mAuth.getCurrentUser() != null) {
-            fetchFirebaseIdTokenAndContinue();
+            fetchTokenAndEnterApp();
         }
 
-        // Initialisation des vues
+        bLogin.setOnClickListener(v -> onLoginClick());
+        btnGoogle.setOnClickListener(v -> onGoogleClick());
+        tvRegister.setOnClickListener(v -> startActivity(new Intent(this, Register.class)));
+    }
+
+    private void initViews() {
         tilEmail = findViewById(R.id.tilEmail);
         tilPassword = findViewById(R.id.tilPassword);
         etMail = findViewById(R.id.etMail);
@@ -72,18 +71,16 @@ public class MainActivity extends AppCompatActivity {
         btnGoogle = findViewById(R.id.btnGoogle);
         tvRegister = findViewById(R.id.tvRegister);
         progressIndicator = findViewById(R.id.loginProgress);
+    }
 
-        // 2. Configuration Google Sign-In
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id)) // Généré par google-services.json
-                .requestEmail()
-                .build();
+    private void setupGoogleSignIn() {
+        GoogleSignInOptions gso =
+                new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestIdToken(getString(R.string.default_web_client_id))
+                        .requestEmail()
+                        .build();
+
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
-        // Listeners
-        bLogin.setOnClickListener(v -> onLoginClick());
-        btnGoogle.setOnClickListener(v -> onGoogleClick());
-        tvRegister.setOnClickListener(v -> onRegisterLinkClick());
     }
 
     private void onLoginClick() {
@@ -104,115 +101,70 @@ public class MainActivity extends AppCompatActivity {
 
         setLoading(true);
 
-        // Connexion Email/Password
         mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, task -> {
+                .addOnSuccessListener(authResult -> fetchTokenAndEnterApp())
+                .addOnFailureListener(e -> {
                     setLoading(false);
-                    if (task.isSuccessful()) {
-                        fetchFirebaseIdTokenAndContinue();
-                    } else {
-                        Toast.makeText(MainActivity.this, "Erreur : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                    }
+                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 
     private void onGoogleClick() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        googleSignInLauncher.launch(signInIntent);
+        googleSignInLauncher.launch(mGoogleSignInClient.getSignInIntent());
     }
 
-    // Gestionnaire du résultat Google Sign-In
-    private final ActivityResultLauncher<Intent> googleSignInLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == RESULT_OK) {
-                    Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
-                    try {
-                        GoogleSignInAccount account = task.getResult(ApiException.class);
-                        if (account != null) {
-                            firebaseAuthWithGoogle(account.getIdToken());
+    private final ActivityResultLauncher<Intent> googleSignInLauncher =
+            registerForActivityResult(
+                    new ActivityResultContracts.StartActivityForResult(),
+                    result -> {
+                        if (result.getResultCode() == RESULT_OK) {
+                            try {
+                                GoogleSignInAccount account =
+                                        GoogleSignIn.getSignedInAccountFromIntent(result.getData())
+                                                .getResult(ApiException.class);
+                                firebaseAuthWithGoogle(account.getIdToken());
+                            } catch (Exception e) {
+                                Toast.makeText(this, "Google Sign‑In échoué", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    } catch (ApiException e) {
-                        Toast.makeText(this, "Google sign in failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
-                }
-            }
-    );
+            );
 
     private void firebaseAuthWithGoogle(String idToken) {
         setLoading(true);
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, task -> {
+                .addOnSuccessListener(authResult -> fetchTokenAndEnterApp())
+                .addOnFailureListener(e -> {
                     setLoading(false);
-                    if (task.isSuccessful()) {
-                        fetchFirebaseIdTokenAndContinue();
-                    } else {
-                        Toast.makeText(MainActivity.this, "Authentification Google échouée", Toast.LENGTH_SHORT).show();
-                    }
+                    Toast.makeText(this, "Auth Google échouée", Toast.LENGTH_SHORT).show();
                 });
     }
 
-    private void onRegisterLinkClick() {
-        startActivity(new Intent(this, Register.class));
+    // ✅ SEULE FONCTION D’AUTH
+    // ✅ PAS D’APPEL BACKEND ICI
+    private void fetchTokenAndEnterApp() {
+        mAuth.getCurrentUser().getIdToken(true)
+                .addOnSuccessListener(result -> {
+                    AuthTokenManager.saveToken(result.getToken());
+                    Log.d(TAG, "Token Firebase prêt");
+                    goToApp();
+                })
+                .addOnFailureListener(e -> {
+                    setLoading(false);
+                    Toast.makeText(this, "Erreur Firebase", Toast.LENGTH_SHORT).show();
+                });
     }
 
-    private void goToQuiz() {
-        startActivity(new Intent(MainActivity.this, SelectLevel.class));
+    private void goToApp() {
+        setLoading(false);
+        startActivity(new Intent(this, SelectLevel.class));
         finish();
     }
 
-    private void setLoading(boolean isLoading) {
-        progressIndicator.setVisibility(isLoading ? View.VISIBLE : View.GONE);
-        bLogin.setEnabled(!isLoading);
-        btnGoogle.setEnabled(!isLoading);
-        etMail.setEnabled(!isLoading);
-        etPassword.setEnabled(!isLoading);
-    }
-
-
-    private void fetchFirebaseIdTokenAndContinue() {
-
-        FirebaseAuth.getInstance()
-                .getCurrentUser()
-                .getIdToken(true)
-                .addOnSuccessListener(result -> {
-
-                    String firebaseIdToken = result.getToken();
-                    Log.e("FIREBASE_ID_TOKEN", firebaseIdToken);
-
-                    Retrofit retrofit = ApiClient.getClient(firebaseIdToken);
-                    AuthApi authApi = retrofit.create(AuthApi.class);
-
-                    authApi.getMe().enqueue(new Callback<Map<String, Object>>() {
-
-                        @Override
-                        public void onResponse(Call<Map<String, Object>> call,
-                                               Response<Map<String, Object>> response) {
-
-                            if (response.isSuccessful()) {
-                                Log.e("FASTAPI_TEST", "RESPONSE = " + response.body());
-
-                                // ✅ NAVIGATION ICI SEULEMENT
-                                goToQuiz();
-                            } else {
-                                Log.e("FASTAPI_TEST", "HTTP ERROR " + response.code());
-                                Toast.makeText(MainActivity.this,
-                                        "Erreur FastAPI", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<Map<String, Object>> call, Throwable t) {
-                            Log.e("FASTAPI_ERROR", "BACKEND INDISPONIBLE", t);
-                            Toast.makeText(MainActivity.this,
-                                    "Backend indisponible", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("FIREBASE_ID_TOKEN", "TOKEN ERROR", e);
-                });
+    private void setLoading(boolean loading) {
+        if (progressIndicator != null) {
+            progressIndicator.setVisibility(loading ? View.VISIBLE : View.GONE);
+        }
     }
 }

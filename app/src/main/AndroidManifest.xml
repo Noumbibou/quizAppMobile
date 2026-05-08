@@ -16,6 +16,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.QuizApp_Fomin_G2Roudani">
 
+        <activity android:name=".LeaderboardActivity" android:exported="false" />
+        <activity android:name=".MyScoresActivity" android:exported="false" />
         <activity android:name=".Quiz" android:exported="false" />
         <activity android:name=".SelectLevel" android:exported="false" />
         <activity android:name=".Score" android:exported="false" />

@@ -42,7 +42,7 @@
                 app:trackThickness="16dp"
                 app:trackColor="@color/surface_variant"
                 app:indicatorColor="@color/primary"
-                android:progress="70"
+                android:progress="0"
                 app:trackCornerRadius="8dp" />
 
             <TextView
@@ -50,7 +50,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="-110dp"
-                android:text="70%"
+                android:text="0%"
                 android:textAppearance="@style/TextAppearance.Material3.HeadlineLarge"
                 android:textStyle="bold"
                 android:textColor="@color/primary" />
@@ -60,7 +60,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="70dp"
-                android:text="Score: 35 / 50"
+                android:text="Score: 0 / 0"
                 android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
                 android:textColor="@color/on_surface" />
 
@@ -69,7 +69,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Niveau : Débutant"
+                android:text="Niveau : -"
                 android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
                 android:textColor="@color/on_surface_variant" />
 
@@ -80,24 +80,54 @@
         android:id="@+id/btnRetry"
         style="@style/Widget.Material3.Button"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_marginTop="40dp"
-        android:text="Recommencer ce niveau"
-        android:textSize="16sp"
+        android:layout_height="56dp"
+        android:layout_marginTop="32dp"
+        android:text="Recommencer"
+        app:icon="@drawable/ic_level_beginner"
         app:cornerRadius="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/btnBack"
+        app:layout_constraintBottom_toTopOf="@+id/layoutStatsButtons"
         app:layout_constraintTop_toBottomOf="@id/cardScore" />
+
+    <LinearLayout
+        android:id="@+id/layoutStatsButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/btnBack"
+        app:layout_constraintTop_toBottomOf="@id/btnRetry">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnLeaderboard"
+            style="@style/Widget.Material3.Button.TonalButton"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_marginEnd="6dp"
+            android:layout_weight="1"
+            android:text="Classement"
+            app:cornerRadius="16dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnMyScores"
+            style="@style/Widget.Material3.Button.TonalButton"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="6dp"
+            android:layout_weight="1"
+            android:text="Mes Scores"
+            app:cornerRadius="16dp" />
+
+    </LinearLayout>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnBack"
         style="@style/Widget.Material3.Button.OutlinedButton"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="56dp"
         android:layout_marginTop="12dp"
         android:text="Retour aux niveaux"
-        android:textSize="16sp"
         app:cornerRadius="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnRetry" />
+        app:layout_constraintTop_toBottomOf="@id/layoutStatsButtons" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
