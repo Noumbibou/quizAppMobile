@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         initViews();
         setupGoogleSignIn();
 
-        // ✅ AUTO‑LOGIN PROPRE (SANS APPEL BACKEND)
+        // ✅ AUTO‑LOGIN PROPRE
         if (mAuth.getCurrentUser() != null) {
             fetchTokenAndEnterApp();
         }
@@ -141,8 +141,6 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    // ✅ SEULE FONCTION D’AUTH
-    // ✅ PAS D’APPEL BACKEND ICI
     private void fetchTokenAndEnterApp() {
         mAuth.getCurrentUser().getIdToken(true)
                 .addOnSuccessListener(result -> {
@@ -158,7 +156,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void goToApp() {
         setLoading(false);
-        startActivity(new Intent(this, SelectLevel.class));
+        // CHANGEMENT ICI : On va vers le Dashboard au lieu de SelectLevel
+        startActivity(new Intent(this, DashboardActivity.class));
         finish();
     }
 

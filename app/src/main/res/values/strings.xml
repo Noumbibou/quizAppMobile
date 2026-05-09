@@ -1,14 +1,32 @@
 <resources>
-    <string name="app_name">QuizApp_Fomin_G2Roudani</string>
-    <string name="title_activity_login">LoginActivity</string>
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="welcome">"Welcome !"</string>
-    <string name="invalid_username">Not a valid username</string>
-    <string name="invalid_password">Password must be >5 characters</string>
-    <string name="login_failed">"Login failed"</string>
+    <string name="app_name">Quiz App Pro</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Accueil</string>
+    <string name="nav_stats">Stats</string>
+    <string name="nav_leaderboard">Classement</string>
+    <string name="nav_history">Historique</string>
+    <string name="nav_profile">Profil</string>
+
+    <!-- Dashboard / Home -->
+    <string name="home_welcome">👋 Bienvenue,</string>
+    <string name="home_stats_title">Statistiques rapides</string>
+    <string name="home_start_quiz">COMMENCER UN QUIZ</string>
+    <string name="stat_played">Joués</string>
+    <string name="stat_avg">Moyenne</string>
+    <string name="stat_best">Record</string>
+
+    <!-- Profil -->
+    <string name="profile_edit">Modifier le profil</string>
+    <string name="profile_logout">Se déconnecter</string>
+    <string name="profile_member_since">Membre depuis %1$s</string>
+
+    <!-- Historique & Classement -->
+    <string name="history_title">Mon Historique</string>
+    <string name="leaderboard_title">Classement Général</string>
+    <string name="stats_detailed_title">Statistiques détaillées</string>
+
+    <!-- Login / Register UI -->
     <string name="login_title">Se connecter</string>
     <string name="login_subtitle">Prêt à tester vos connaissances en POO ?</string>
     <string name="register_title">Créer un compte</string>
@@ -25,17 +43,12 @@
     <string name="link_to_register">Pas de compte ? Inscrivez-vous</string>
     <string name="link_to_login">Déjà inscrit ? Connectez-vous</string>
 
+    <!-- Validation & Erreurs -->
     <string name="error_email">Email invalide</string>
     <string name="error_password_short">6 caractères minimum</string>
     <string name="error_password_match">Les mots de passe ne correspondent pas</string>
     <string name="error_field_required">Ce champ est requis</string>
 
-    <string name="cd_level_beginner">Icône niveau débutant</string>
-    <string name="cd_level_intermediate">Icône niveau intermédiaire</string>
-    <string name="cd_level_advanced">Icône niveau avancé</string>
-
-
-    <!-- <string name="app_name">Quiz Java POO</string> -->
-
-    <!-- <string name="app_name">Quiz Java POO</string> -->
+    <!-- Auth Config -->
+    <string name="default_web_client_id" translatable="false">YOUR_CLIENT_ID_HERE</string>
 </resources>

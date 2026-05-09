@@ -1,6 +1,5 @@
 package com.example.quizapp_fomin_g2roudani.adapters;
 
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,24 +32,36 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         LeaderboardEntry entry = items.get(position);
-        holder.tvRank.setText("#" + entry.getRank());
-        holder.tvUsername.setText(entry.getUsername());
+        
+        // Calcul du rang et du nom anonyme côté client
+        int rank = position + 1;
+        String anonymousName = "Joueur #" + rank;
+
+        holder.tvRank.setText("#" + rank);
+        holder.tvUsername.setText(anonymousName);
         holder.tvScore.setText(entry.getScore() + " / " + entry.getTotal());
 
-        // Style spécial pour le TOP 3
-        switch (entry.getRank()) {
+        // Style visuel pour le TOP 3
+        applyTop3Style(holder.tvRank, rank);
+    }
+
+    private void applyTop3Style(TextView tvRank, int rank) {
+        switch (rank) {
             case 1:
-                holder.tvRank.setTextColor(Color.parseColor("#FFD700")); // Or
-                holder.tvRank.setTextSize(20);
+                tvRank.setTextColor(Color.parseColor("#FFD700")); // Or
+                tvRank.setTextSize(22);
                 break;
             case 2:
-                holder.tvRank.setTextColor(Color.parseColor("#C0C0C0")); // Argent
+                tvRank.setTextColor(Color.parseColor("#C0C0C0")); // Argent
+                tvRank.setTextSize(18);
                 break;
             case 3:
-                holder.tvRank.setTextColor(Color.parseColor("#CD7F32")); // Bronze
+                tvRank.setTextColor(Color.parseColor("#CD7F32")); // Bronze
+                tvRank.setTextSize(18);
                 break;
             default:
-                holder.tvRank.setTextColor(Color.parseColor("#64748B")); // Gris standard
+                tvRank.setTextColor(Color.parseColor("#64748B")); // Gris standard
+                tvRank.setTextSize(16);
                 break;
         }
     }

@@ -4,18 +4,23 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Patterns;
-import android.widget.Button;
-import android.widget.EditText;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 public class Register extends AppCompatActivity {
 
-    private EditText etMail, etPassword, confirmPassword;
-    private Button btnRegister;
+    private TextInputLayout tilNom, tilEmail, tilPassword, tilConfirm;
+    private TextInputEditText etNom, etMail, etPassword, etConfirm;
+    private MaterialButton btnRegister;
     private FirebaseAuth mAuth;
 
     @Override
@@ -24,53 +29,66 @@ public class Register extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         mAuth = FirebaseAuth.getInstance();
+        initViews();
 
-        etMail = findViewById(R.id.etMail);
-        etPassword = findViewById(R.id.etPassword);
-        confirmPassword = findViewById(R.id.confirmPassword);
-        btnRegister = findViewById(R.id.Bregister);
-
-        btnRegister.setOnClickListener(v -> registerUser());
+        btnRegister.setOnClickListener(v -> handleRegister());
     }
 
-    private void registerUser() {
+    private void initViews() {
+        tilNom = findViewById(R.id.tilNom);
+        tilEmail = findViewById(R.id.tilEmailReg);
+        tilPassword = findViewById(R.id.tilPassReg);
+        tilConfirm = findViewById(R.id.tilConfirmReg);
+
+        etNom = findViewById(R.id.etNom);
+        etMail = findViewById(R.id.etMail);
+        etPassword = findViewById(R.id.etPassword);
+        etConfirm = findViewById(R.id.confirmPassword);
+        btnRegister = findViewById(R.id.Bregister);
+    }
+
+    private void handleRegister() {
+        String nom = etNom.getText().toString().trim();
         String email = etMail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
-        String confirmPass = confirmPassword.getText().toString().trim();
+        String confirm = etConfirm.getText().toString().trim();
 
-        if (TextUtils.isEmpty(email)) {
-            etMail.setError("Email requis");
+        // Reset errors
+        tilNom.setError(null);
+        tilEmail.setError(null);
+        tilPassword.setError(null);
+        tilConfirm.setError(null);
+
+        if (TextUtils.isEmpty(nom)) {
+            tilNom.setError(getString(R.string.error_field_required));
             return;
         }
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            etMail.setError("Email invalide");
+        if (TextUtils.isEmpty(email) || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            tilEmail.setError(getString(R.string.error_email));
             return;
         }
         if (password.length() < 6) {
-            etPassword.setError("Minimum 6 caractères");
+            tilPassword.setError(getString(R.string.error_password_short));
             return;
         }
-        if (!password.equals(confirmPass)) {
-            confirmPassword.setError("Les mots de passe ne correspondent pas");
+        if (!password.equals(confirm)) {
+            tilConfirm.setError(getString(R.string.error_password_match));
             return;
         }
 
         mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        // On déconnecte l'utilisateur immédiatement après la création
-                        mAuth.signOut();
-                        
-                        Toast.makeText(Register.this, "Inscription réussie ! Veuillez vous connecter.", Toast.LENGTH_LONG).show();
-                        
-                        Intent intent = new Intent(Register.this, MainActivity.class);
-                        // On force le redémarrage propre de MainActivity
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
-                        finish();
-                    } else {
-                        Toast.makeText(Register.this, "Erreur : " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                .addOnSuccessListener(authResult -> {
+                    FirebaseUser user = mAuth.getCurrentUser();
+                    if (user != null) {
+                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                .setDisplayName(nom)
+                                .build();
+                        user.updateProfile(profileUpdates);
                     }
-                });
+                    Toast.makeText(this, "Compte créé !", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(this, DashboardActivity.class));
+                    finish();
+                })
+                .addOnFailureListener(e -> Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 }

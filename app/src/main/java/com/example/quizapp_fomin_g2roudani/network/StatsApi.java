@@ -1,6 +1,7 @@
 package com.example.quizapp_fomin_g2roudani.network;
 
 import com.example.quizapp_fomin_g2roudani.models.LeaderboardEntry;
+import com.example.quizapp_fomin_g2roudani.models.MyStatsSummary;
 import com.example.quizapp_fomin_g2roudani.models.UserScore;
 
 import java.util.List;
@@ -15,4 +16,7 @@ public interface StatsApi {
 
     @GET("stats/my-scores")
     Call<List<UserScore>> getMyScores();
+
+    @GET("stats/my-summary")
+    Call<MyStatsSummary> getMySummary();
 }
