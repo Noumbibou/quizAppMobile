@@ -50,12 +50,25 @@
             android:textAppearance="@style/TextAppearance.Material3.LabelLarge"
             android:textColor="@color/primary" />
 
+        <!-- BOUTON ADMIN (Caché par défaut) -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAdminDashboard"
+            style="@style/Widget.Material3.Button.TonalButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="Espace Administration"
+            android:visibility="gone"
+            app:cornerRadius="12dp"
+            app:icon="@android:drawable/ic_lock_lock"
+            app:iconTint="@color/primary" />
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnEditProfile"
             style="@style/Widget.Material3.Button.TonalButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="48dp"
+            android:layout_marginTop="16dp"
             android:text="Modifier le profil"
             app:cornerRadius="12dp"
             app:icon="@android:drawable/ic_menu_edit" />

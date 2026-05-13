@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- ✅ PERMISSION INTERNET OBLIGATOIRE -->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -16,6 +15,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.QuizApp_Fomin_G2Roudani">
 
+        <!-- ✅ Espace Administration -->
+        <activity
+            android:name=".AdminDashboardActivity"
+            android:exported="false"
+            android:theme="@style/Theme.QuizApp_Fomin_G2Roudani" />
+        <activity
+            android:name=".UsersManagementActivity"
+            android:exported="false"
+            android:theme="@style/Theme.QuizApp_Fomin_G2Roudani" />
+        <activity
+            android:name=".QuestionsManagementActivity"
+            android:exported="false"
+            android:theme="@style/Theme.QuizApp_Fomin_G2Roudani" />
+
+        <!-- Activités Utilisateur -->
         <activity android:name=".DashboardActivity" android:exported="false" />
         <activity android:name=".StatsActivity" android:exported="false" />
         <activity android:name=".LeaderboardActivity" android:exported="false" />

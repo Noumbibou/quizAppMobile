@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <!-- Affichage du Rôle -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Statut actuel :"
+        android:textAppearance="@style/TextAppearance.Material3.LabelLarge"
+        android:textColor="@color/on_surface_variant" />
+
+    <TextView
+        android:id="@+id/tvUserRoleValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Utilisateur"
+        android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
+        android:textStyle="bold" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginVertical="20dp"
+        android:background="@color/outline_variant" />
+
+    <!-- Bouton Toggle Admin -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnToggleAdmin"
+        style="@style/Widget.Material3.Button.TonalButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Rendre Admin"
+        app:icon="@android:drawable/ic_lock_idle_lock" />
+
+    <!-- Bouton Toggle Disable -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnToggleDisable"
+        style="@style/Widget.Material3.Button.TextButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Désactiver le compte"
+        android:textColor="@color/error"
+        app:icon="@android:drawable/ic_delete"
+        app:iconTint="@color/error" />
+
+</LinearLayout>

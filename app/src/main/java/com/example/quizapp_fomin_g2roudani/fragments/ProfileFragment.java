@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -12,8 +13,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.quizapp_fomin_g2roudani.AdminDashboardActivity;
 import com.example.quizapp_fomin_g2roudani.MainActivity;
 import com.example.quizapp_fomin_g2roudani.R;
+import com.example.quizapp_fomin_g2roudani.auth.AuthTokenManager;
+import com.example.quizapp_fomin_g2roudani.network.ApiClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.FirebaseUserMetadata;
@@ -25,6 +29,7 @@ import java.util.Locale;
 public class ProfileFragment extends Fragment {
 
     private TextView tvName, tvEmail, tvMemberSince;
+    private Button btnAdminDashboard;
     private FirebaseAuth mAuth;
 
     @Nullable
@@ -37,8 +42,10 @@ public class ProfileFragment extends Fragment {
         tvName = view.findViewById(R.id.tvProfileName);
         tvEmail = view.findViewById(R.id.tvProfileEmail);
         tvMemberSince = view.findViewById(R.id.tvProfileMemberSince);
+        btnAdminDashboard = view.findViewById(R.id.btnAdminDashboard);
 
         setupProfile();
+        setupAdminAccess();
 
         view.findViewById(R.id.btnLogout).setOnClickListener(v -> logout());
         view.findViewById(R.id.btnEditProfile).setOnClickListener(v -> 
@@ -67,9 +74,23 @@ public class ProfileFragment extends Fragment {
         }
     }
 
+    private void setupAdminAccess() {
+        if (AuthTokenManager.isAdmin()) {
+            btnAdminDashboard.setVisibility(View.VISIBLE);
+            btnAdminDashboard.setOnClickListener(v -> {
+                Intent intent = new Intent(getActivity(), AdminDashboardActivity.class);
+                startActivity(intent);
+            });
+        } else {
+            btnAdminDashboard.setVisibility(View.GONE);
+        }
+    }
+
     private void logout() {
         mAuth.signOut();
+        AuthTokenManager.clear(getContext());
         Intent intent = new Intent(getActivity(), MainActivity.class);
+        ApiClient.invalidate();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         if (getActivity() != null) getActivity().finish();
