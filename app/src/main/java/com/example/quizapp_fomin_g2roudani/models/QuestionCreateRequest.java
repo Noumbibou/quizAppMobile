@@ -24,7 +24,10 @@ public class QuestionCreateRequest {
     @SerializedName("level")
     private String level;
 
-    public QuestionCreateRequest(String question, String optionA, String optionB, String optionC, String optionD, String correct, String level) {
+    @SerializedName("set_id")
+    private int setId;
+
+    public QuestionCreateRequest(String question, String optionA, String optionB, String optionC, String optionD, String correct, String level, int setId) {
         this.question = question;
         this.optionA = optionA;
         this.optionB = optionB;
@@ -32,9 +35,10 @@ public class QuestionCreateRequest {
         this.optionD = optionD;
         this.correct = correct;
         this.level = level;
+        this.setId = setId;
     }
 
-    // Getters and Setters (Optional for Retrofit/Gson but good for completeness)
+    // Getters and Setters
     public String getQuestion() { return question; }
     public void setQuestion(String question) { this.question = question; }
 
@@ -55,4 +59,7 @@ public class QuestionCreateRequest {
 
     public String getLevel() { return level; }
     public void setLevel(String level) { this.level = level; }
+
+    public int getSetId() { return setId; }
+    public void setSetId(int setId) { this.setId = setId; }
 }

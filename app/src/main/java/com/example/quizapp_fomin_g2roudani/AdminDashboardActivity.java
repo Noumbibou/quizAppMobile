@@ -19,7 +19,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // ✅ SÉCURITÉ : Vérification du rôle admin avant d'afficher quoi que ce soit
+        // ✅ SÉCURITÉ : Vérification du rôle admin
         if (!AuthTokenManager.isAdmin()) {
             Log.e("SECURITY", "Accès non autorisé à l'AdminDashboard");
             finish();
@@ -46,14 +46,14 @@ public class AdminDashboardActivity extends AppCompatActivity {
 
     private void setupListeners() {
         cardManageUsers.setOnClickListener(v -> {
-            // ✅ Navigation vers la gestion des utilisateurs
+            // ✅ Gestion des utilisateurs
             Intent intent = new Intent(this, UsersManagementActivity.class);
             startActivity(intent);
         });
 
         cardManageQuestions.setOnClickListener(v -> {
-            // ✅ Navigation vers la gestion des questions
-            Intent intent = new Intent(this, QuestionsManagementActivity.class);
+            // ✅ Nouvelle entrée : Gestion des Packs de Questions
+            Intent intent = new Intent(this, QuestionSetsManagementActivity.class);
             startActivity(intent);
         });
     }

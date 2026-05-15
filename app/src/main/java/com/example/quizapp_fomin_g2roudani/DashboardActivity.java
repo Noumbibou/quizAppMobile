@@ -19,9 +19,20 @@ public class DashboardActivity extends AppCompatActivity {
 
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         
-        // Charger Accueil par défaut
-        if (savedInstanceState == null) {
-            loadFragment(new HomeFragment());
+        // Gérer la redirection depuis d'autres activités (ex: Score)
+        String target = getIntent().getStringExtra("target_fragment");
+        if (target != null) {
+            if (target.equals("leaderboard")) {
+                loadFragment(new LeaderboardFragment());
+                bottomNav.setSelectedItemId(R.id.nav_leaderboard);
+            } else if (target.equals("history")) {
+                loadFragment(new HistoryFragment());
+                bottomNav.setSelectedItemId(R.id.nav_history);
+            } else {
+                loadDefaultFragment(savedInstanceState);
+            }
+        } else {
+            loadDefaultFragment(savedInstanceState);
         }
 
         bottomNav.setOnItemSelectedListener(item -> {
@@ -36,6 +47,12 @@ public class DashboardActivity extends AppCompatActivity {
 
             return loadFragment(fragment);
         });
+    }
+
+    private void loadDefaultFragment(Bundle savedInstanceState) {
+        if (savedInstanceState == null) {
+            loadFragment(new HomeFragment());
+        }
     }
 
     private boolean loadFragment(Fragment fragment) {

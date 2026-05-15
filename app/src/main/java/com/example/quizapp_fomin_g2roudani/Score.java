@@ -55,16 +55,25 @@ public class Score extends AppCompatActivity {
         });
 
         btnBack.setOnClickListener(v -> {
+            // Retour au sélecteur de niveau
             startActivity(new Intent(this, SelectLevel.class));
             finish();
         });
 
         btnLeaderboard.setOnClickListener(v -> {
-            startActivity(new Intent(this, LeaderboardActivity.class));
+            // Redirection vers le Dashboard (onglet Classement)
+            Intent intent = new Intent(this, DashboardActivity.class);
+            intent.putExtra("target_fragment", "leaderboard");
+            startActivity(intent);
+            finish();
         });
 
         btnMyScores.setOnClickListener(v -> {
-            startActivity(new Intent(this, MyScoresActivity.class));
+            // Redirection vers le Dashboard (onglet Historique)
+            Intent intent = new Intent(this, DashboardActivity.class);
+            intent.putExtra("target_fragment", "history");
+            startActivity(intent);
+            finish();
         });
     }
 

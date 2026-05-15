@@ -5,66 +5,49 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
-    tools:context=".LeaderboardActivity">
+    tools:context=".QuestionSetsManagementActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/surface">
+        android:background="@android:color/transparent"
+        app:elevation="0dp">
 
         <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
+            android:id="@+id/toolbarSets"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="Classement"
+            app:title="Packs de Questions"
             app:titleCentered="true"
-            app:navigationIcon="@drawable/ic_back" />
-
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tabLayoutLevels"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:tabIndicatorFullWidth="false"
-            app:tabMode="fixed"
-            app:tabSelectedTextColor="@color/primary"
-            app:tabTextColor="@color/on_surface_variant">
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Débutant" />
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Intermédiaire" />
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Avancé" />
-
-        </com.google.android.material.tabs.TabLayout>
-
+            app:navigationIcon="@android:drawable/ic_menu_revert" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipeRefresh"
+        android:id="@+id/swipeRefreshSets"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvLeaderboard"
+            android:id="@+id/rvQuestionSets"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:paddingVertical="8dp" />
+            android:padding="8dp" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAddSet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="24dp"
+        android:contentDescription="Ajouter un pack"
+        app:srcCompat="@android:drawable/ic_input_add" />
+
     <com.google.android.material.progressindicator.LinearProgressIndicator
-        android:id="@+id/progressIndicator"
+        android:id="@+id/progressSets"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:indeterminate="true"

@@ -3,6 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
@@ -15,7 +18,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.QuizApp_Fomin_G2Roudani">
 
-        <!-- ✅ Espace Administration -->
+        <!-- ✅ API Key pour Google Maps (Remplacez par votre clé réelle) -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="YOUR_GOOGLE_MAPS_API_KEY" />
+
+        <!-- ✅ Structure Administration -->
         <activity
             android:name=".AdminDashboardActivity"
             android:exported="false"
@@ -25,23 +33,23 @@
             android:exported="false"
             android:theme="@style/Theme.QuizApp_Fomin_G2Roudani" />
         <activity
-            android:name=".QuestionsManagementActivity"
+            android:name=".QuestionSetsManagementActivity"
+            android:exported="false"
+            android:theme="@style/Theme.QuizApp_Fomin_G2Roudani" />
+        <activity
+            android:name=".QuestionsBySetActivity"
             android:exported="false"
             android:theme="@style/Theme.QuizApp_Fomin_G2Roudani" />
 
-        <!-- Activités Utilisateur -->
-        <activity android:name=".DashboardActivity" android:exported="false" />
-        <activity android:name=".StatsActivity" android:exported="false" />
-        <activity android:name=".LeaderboardActivity" android:exported="false" />
-        <activity android:name=".MyScoresActivity" android:exported="false" />
+        <!-- ✅ Structure Utilisateur -->
+        <activity
+            android:name=".DashboardActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
+
         <activity android:name=".Quiz" android:exported="false" />
         <activity android:name=".SelectLevel" android:exported="false" />
         <activity android:name=".Score" android:exported="false" />
-        <activity android:name=".Quiz5" android:exported="false" />
-        <activity android:name=".Quiz4" android:exported="false" />
-        <activity android:name=".Quiz3" android:exported="false" />
-        <activity android:name=".Quiz2" android:exported="false" />
-        <activity android:name=".Quiz1" android:exported="false" />
         <activity android:name=".Register" android:exported="false" />
 
         <activity
