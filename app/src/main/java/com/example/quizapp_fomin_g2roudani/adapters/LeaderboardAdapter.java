@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.quizapp_fomin_g2roudani.R;
 import com.example.quizapp_fomin_g2roudani.models.LeaderboardEntry;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.List;
 
@@ -33,12 +35,29 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         LeaderboardEntry entry = items.get(position);
         
-        // Calcul du rang et du nom anonyme côté client
         int rank = position + 1;
-        String anonymousName = "Joueur #" + rank;
+        
+        // 1. Utiliser le username envoyé par le backend
+        String displayName = entry.getUsername();
+        
+        // 2. Fallback si le username est vide (Logique demandée basée sur Firebase)
+        if (displayName == null || displayName.isEmpty()) {
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            if (user != null) {
+                displayName = user.getDisplayName();
+                if (displayName == null || displayName.isEmpty()) {
+                    displayName = (user.getEmail() != null) ? user.getEmail().split("@")[0] : null;
+                }
+            }
+        }
+        
+        // 3. Fallback ultime si rien n'est trouvé
+        if (displayName == null || displayName.isEmpty()) {
+            displayName = "Joueur #" + rank;
+        }
 
         holder.tvRank.setText("#" + rank);
-        holder.tvUsername.setText(anonymousName);
+        holder.tvUsername.setText(displayName);
         holder.tvScore.setText(entry.getScore() + " / " + entry.getTotal());
 
         // Style visuel pour le TOP 3

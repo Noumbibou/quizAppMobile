@@ -35,9 +35,6 @@ import com.example.quizapp_fomin_g2roudani.network.ApiClient;
 import com.example.quizapp_fomin_g2roudani.network.QuizApi;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
@@ -61,7 +58,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Quiz extends AppCompatActivity implements OnMapReadyCallback {
+public class Quiz extends AppCompatActivity {
 
     private static final String TAG = "IA_FRAUD_DETECTION";
     private static final int PERMISSION_CODE = 1001;
@@ -91,7 +88,6 @@ public class Quiz extends AppCompatActivity implements OnMapReadyCallback {
     // Localisation & Timer
     private long startTime;
     private double latitude = 0.0, longitude = 0.0;
-    private GoogleMap mMap;
     private FusedLocationProviderClient fusedLocationClient;
     private CountDownTimer countDownTimer;
 
@@ -100,6 +96,7 @@ public class Quiz extends AppCompatActivity implements OnMapReadyCallback {
         super.onCreate(savedInstanceState);
         AuthTokenManager.init(this);
         EdgeToEdge.enable(this);
+        // Empêche captures d'écran et sécurise la fenêtre
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         setContentView(R.layout.activity_quiz);
 
@@ -166,7 +163,6 @@ public class Quiz extends AppCompatActivity implements OnMapReadyCallback {
         startTime = System.currentTimeMillis() / 1000;
         faceChanges = 0;
         startCameraAnalysis();
-        setupMap();
         updateUserLocation();
         showQuestion(0);
     }
@@ -220,29 +216,32 @@ public class Quiz extends AppCompatActivity implements OnMapReadyCallback {
             } else {
                 float diffX = Math.abs(referenceFaceRect.centerX() - currentRect.centerX());
                 float diffY = Math.abs(referenceFaceRect.centerY() - currentRect.centerY());
-                // ✅ Seuil moins sensible (300)
                 if (diffX > 300 || diffY > 300) {
                     currentAnomaly = true;
                 }
             }
         } else {
-            // ✅ Aucun visage ou plusieurs visages
             currentAnomaly = true;
         }
 
         if (currentAnomaly) {
             faceChanges++;
         } else {
-            faceChanges = 0; // Réinitialisation si tout redevient normal
+            faceChanges = 0;
         }
-
-        Log.d("IA_DEBUG", "faces=" + faces.size() + " changes=" + faceChanges);
 
         if (faceChanges >= 3) {
             faceVerified = false;
             cheatDetected = true;
             runOnUiThread(this::showCheatAlert);
         }
+    }
+
+    private void triggerFraud(String reason) {
+        Log.d(TAG, "Fraude détectée : " + reason);
+        cheatDetected = true;
+        faceVerified = false;
+        runOnUiThread(this::showCheatAlert);
     }
 
     private void showCheatAlert() {
@@ -252,8 +251,8 @@ public class Quiz extends AppCompatActivity implements OnMapReadyCallback {
         stopCountdown();
 
         new MaterialAlertDialogBuilder(this)
-                .setTitle("⚠️ ALERTE FRAUDE IA")
-                .setMessage("Un comportement anormal a été détecté. L'examen est interrompu.")
+                .setTitle("⚠️ ALERTE FRAUDE")
+                .setMessage("Un comportement anormal ou une sortie de l'application a été détecté. L'examen est interrompu.")
                 .setCancelable(false)
                 .setPositiveButton("Terminer", (dialog, which) -> submitFinalScore())
                 .show();
@@ -263,7 +262,6 @@ public class Quiz extends AppCompatActivity implements OnMapReadyCallback {
         isQuizActive = false;
         showLoading(true);
 
-        // ✅ SECURITÉ : Éviter l'envoi d'une liste de réponses vide (cause probable erreur 500)
         if (questions.size() > 0 && currentQuestionIndex < questions.size()) {
             boolean currentQuestionAnswered = false;
             for (Map<String, Object> ans : userAnswers) {
@@ -399,11 +397,6 @@ public class Quiz extends AppCompatActivity implements OnMapReadyCallback {
         }
     }
 
-    private void setupMap() {
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment);
-        if (mapFragment != null) mapFragment.getMapAsync(this);
-    }
-    @Override public void onMapReady(@NonNull GoogleMap googleMap) { mMap = googleMap; }
     private void updateUserLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             fusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
@@ -420,10 +413,36 @@ public class Quiz extends AppCompatActivity implements OnMapReadyCallback {
         });
     }
     private void showLoading(boolean s) { if (loader != null) loader.setVisibility(s ? View.VISIBLE : View.GONE); }
+
     @Override public void onRequestPermissionsResult(int rc, @NonNull String[] p, @NonNull int[] gr) {
         super.onRequestPermissionsResult(rc, p, gr);
         if (rc == PERMISSION_CODE && gr.length > 0 && gr[0] == PackageManager.PERMISSION_GRANTED) startQuizNow();
     }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (isQuizActive && !hasFocus && !cheatDetected) {
+            triggerFraud("Changement d'onglet ou perte de focus");
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (isQuizActive && !cheatDetected) {
+            triggerFraud("Application en arrière-plan");
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (isQuizActive && !cheatDetected) {
+            triggerFraud("Application arrêtée");
+        }
+    }
+
     @Override protected void onDestroy() {
         super.onDestroy();
         cameraExecutor.shutdown();

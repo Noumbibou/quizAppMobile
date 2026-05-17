@@ -12,9 +12,16 @@
     <string name="home_welcome">👋 Bienvenue,</string>
     <string name="home_stats_title">Statistiques rapides</string>
     <string name="home_start_quiz">COMMENCER UN QUIZ</string>
+    <string name="home_view_map">📍 VOIR MA POSITION</string>
     <string name="stat_played">Joués</string>
     <string name="stat_avg">Moyenne</string>
     <string name="stat_best">Record</string>
+
+    <!-- Map -->
+    <string name="map_title">Ma Position</string>
+    <string name="map_toolbar_title">Localisation</string>
+    <string name="map_marker_title">Vous êtes ici</string>
+    <string name="error_permission_denied_location">Permission de localisation refusée</string>
 
     <!-- Profil -->
     <string name="profile_edit">Modifier le profil</string>

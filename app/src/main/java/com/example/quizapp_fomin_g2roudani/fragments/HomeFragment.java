@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.quizapp_fomin_g2roudani.MapActivity;
 import com.example.quizapp_fomin_g2roudani.R;
 import com.example.quizapp_fomin_g2roudani.SelectLevel;
 import com.example.quizapp_fomin_g2roudani.models.MyStatsSummary;
@@ -65,6 +66,10 @@ public class HomeFragment extends Fragment {
 
         view.findViewById(R.id.btnStartQuizHome).setOnClickListener(v -> 
             startActivity(new Intent(getActivity(), SelectLevel.class)));
+
+        // ✅ Navigation vers MapActivity
+        view.findViewById(R.id.btnOpenMapHome).setOnClickListener(v -> 
+            startActivity(new Intent(getActivity(), MapActivity.class)));
 
         statsApi = ApiClient.getClient().create(StatsApi.class);
 

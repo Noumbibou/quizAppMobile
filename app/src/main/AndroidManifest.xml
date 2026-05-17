@@ -18,10 +18,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.QuizApp_Fomin_G2Roudani">
 
-        <!-- ✅ API Key pour Google Maps (Remplacez par votre clé réelle) -->
+        <!-- ✅ API Key pour Google Maps -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="YOUR_GOOGLE_MAPS_API_KEY" />
+            android:value="AIzaSyAKomqYTzqfKetcxzgxXLDn46_gYELKuYc" />
+
+        <!-- ✅ Activité Carte Dédiée -->
+        <activity
+            android:name=".MapActivity"
+            android:exported="false"
+            android:label="@string/map_title"
+            android:theme="@style/Theme.QuizApp_Fomin_G2Roudani" />
 
         <!-- ✅ Structure Administration -->
         <activity

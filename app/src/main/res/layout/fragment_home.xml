@@ -67,6 +67,15 @@
             app:iconGravity="textStart"
             app:iconSize="28dp" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnOpenMapHome"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:layout_marginTop="16dp"
+            android:text="📍 VOIR MA POSITION"
+            app:cornerRadius="16dp" />
+
         <com.google.android.material.progressindicator.LinearProgressIndicator
             android:id="@+id/loaderHome"
             android:layout_width="match_parent"
