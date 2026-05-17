@@ -2,6 +2,7 @@ package com.example.quizapp_fomin_g2roudani.network;
 
 import com.example.quizapp_fomin_g2roudani.models.AdminQuestion;
 import com.example.quizapp_fomin_g2roudani.models.AdminUser;
+import com.example.quizapp_fomin_g2roudani.models.FraudReport;
 import com.example.quizapp_fomin_g2roudani.models.ImportResponse;
 import com.example.quizapp_fomin_g2roudani.models.QuestionCreateRequest;
 import com.example.quizapp_fomin_g2roudani.models.QuestionSet;
@@ -69,4 +70,8 @@ public interface AdminApi {
             @Path("id") int setId,
             @Part MultipartBody.Part file
     );
+
+    // ✅ Fraud Reports (New)
+    @GET("admin/frauds")
+    Call<List<FraudReport>> getFraudReports();
 }

@@ -49,9 +49,20 @@ dependencies {
     implementation(libs.lifecycle.viewmodel.ktx)
     implementation(libs.firebase.firestore)
     
-    // ✅ Ajout des services Google Play pour la localisation et les cartes
+    // ✅ Services Google Play
     implementation(libs.play.services.location)
     implementation(libs.play.services.maps)
+
+    // ✅ ML Kit Face Detection
+    implementation("com.google.mlkit:face-detection:16.1.7")
+    
+    // ✅ CameraX
+    implementation("androidx.camera:camera-camera2:1.4.1")
+    implementation("androidx.camera:camera-lifecycle:1.4.1")
+    implementation("androidx.camera:camera-view:1.4.1")
+
+    // ✅ Guava
+    implementation(libs.guava)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

@@ -40,6 +40,10 @@
             android:name=".QuestionsBySetActivity"
             android:exported="false"
             android:theme="@style/Theme.QuizApp_Fomin_G2Roudani" />
+        <activity
+            android:name=".FraudReportsActivity"
+            android:exported="false"
+            android:theme="@style/Theme.QuizApp_Fomin_G2Roudani" />
 
         <!-- ✅ Structure Utilisateur -->
         <activity

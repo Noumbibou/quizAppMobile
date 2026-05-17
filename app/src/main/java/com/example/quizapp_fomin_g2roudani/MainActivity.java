@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -50,16 +49,14 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
 
-    // ✅ Utilisation du contrat avec le chemin complet pour éviter l'erreur de constructeur
     private final ActivityResultLauncher<Intent> googleSignInLauncher =
             registerForActivityResult(
-                    new ActivityResultContracts.StartActivityForResult(),
+                    new androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult(),
                     result -> {
                         if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                             try {
-                                GoogleSignInAccount account =
-                                        GoogleSignIn.getSignedInAccountFromIntent(result.getData())
-                                                .getResult(ApiException.class);
+                                GoogleSignInAccount account = GoogleSignIn.getSignedInAccountFromIntent(result.getData())
+                                        .getResult(ApiException.class);
 
                                 if (account != null) {
                                     firebaseAuthWithGoogle(account.getIdToken());
@@ -84,7 +81,8 @@ public class MainActivity extends AppCompatActivity {
         initViews();
         setupGoogleSignIn();
 
-        if (mAuth.getCurrentUser() != null) {
+        // ✅ AUTO‑LOGIN SÉCURISÉ : On vérifie l'user ET la présence d'un token local
+        if (mAuth.getCurrentUser() != null && AuthTokenManager.getToken() != null) {
             fetchTokenAndEnterApp();
         }
 
@@ -153,50 +151,58 @@ public class MainActivity extends AppCompatActivity {
         if (mAuth.getCurrentUser() == null) return;
 
         setLoading(true);
+        // ✅ FORCER LE RAFRAÎCHISSEMENT (true) pour garantir la validité et les Custom Claims
         mAuth.getCurrentUser().getIdToken(true)
                 .addOnSuccessListener(result -> {
                     String token = result.getToken();
+                    Log.d("TOKEN_DEBUG", "Nouveau Token: " + token);
+                    
                     AuthTokenManager.saveToken(MainActivity.this, token);
 
-                    // ✅ CRITIQUE : forcer Retrofit à recréer l'interceptor
+                    // ✅ VITAL : Réinitialiser Retrofit pour qu'il prenne le nouveau token
                     ApiClient.invalidate();
 
                     AuthApi authApi = ApiClient.getClient().create(AuthApi.class);
                     authApi.getMe().enqueue(new Callback<UserMe>() {
                         @Override
-                        public void onResponse(@NonNull Call<UserMe> call,
-                                               @NonNull Response<UserMe> response) {
+                        public void onResponse(@NonNull Call<UserMe> call, @NonNull Response<UserMe> response) {
                             if (response.isSuccessful() && response.body() != null) {
                                 boolean admin = response.body().isAdmin();
                                 Log.d("ADMIN_CHECK", "isAdmin: " + admin);
                                 AuthTokenManager.saveAdminStatus(MainActivity.this, admin);
                                 goToApp();
                             } else {
-                                setLoading(false);
-                                Toast.makeText(MainActivity.this,
-                                        "Erreur session", Toast.LENGTH_SHORT).show();
+                                Log.e(TAG, "Erreur session backend: " + response.code());
+                                handleAuthError();
                             }
                         }
 
                         @Override
-                        public void onFailure(@NonNull Call<UserMe> call,
-                                              @NonNull Throwable t) {
+                        public void onFailure(@NonNull Call<UserMe> call, @NonNull Throwable t) {
+                            Log.e(TAG, "Echec connexion backend", t);
                             setLoading(false);
-                            Toast.makeText(MainActivity.this,
-                                    "Serveur inaccessible", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "Serveur inaccessible", Toast.LENGTH_SHORT).show();
                         }
                     });
                 })
                 .addOnFailureListener(e -> {
                     setLoading(false);
-                    Toast.makeText(this,
-                            "Erreur d'authentification", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Erreur d'authentification", Toast.LENGTH_SHORT).show();
                 });
+    }
+
+    private void handleAuthError() {
+        setLoading(false);
+        mAuth.signOut();
+        AuthTokenManager.clear(this);
+        ApiClient.invalidate();
+        Toast.makeText(this, "Session expirée, veuillez vous reconnecter", Toast.LENGTH_LONG).show();
     }
 
     private void goToApp() {
         setLoading(false);
-        startActivity(new Intent(this, DashboardActivity.class));
+        Intent intent = new Intent(this, DashboardActivity.class);
+        startActivity(intent);
         finish();
     }
 

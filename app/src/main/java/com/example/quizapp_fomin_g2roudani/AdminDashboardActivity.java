@@ -13,7 +13,7 @@ import com.google.android.material.card.MaterialCardView;
 
 public class AdminDashboardActivity extends AppCompatActivity {
 
-    private MaterialCardView cardManageUsers, cardManageQuestions;
+    private MaterialCardView cardManageUsers, cardManageQuestions, cardManageFrauds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +42,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
 
         cardManageUsers = findViewById(R.id.cardManageUsers);
         cardManageQuestions = findViewById(R.id.cardManageQuestions);
+        cardManageFrauds = findViewById(R.id.cardManageFrauds);
     }
 
     private void setupListeners() {
@@ -52,8 +53,14 @@ public class AdminDashboardActivity extends AppCompatActivity {
         });
 
         cardManageQuestions.setOnClickListener(v -> {
-            // ✅ Nouvelle entrée : Gestion des Packs de Questions
+            // ✅ Gestion des Packs de Questions
             Intent intent = new Intent(this, QuestionSetsManagementActivity.class);
+            startActivity(intent);
+        });
+
+        cardManageFrauds.setOnClickListener(v -> {
+            // ✅ Nouvelle entrée : Alertes de Fraude
+            Intent intent = new Intent(this, FraudReportsActivity.class);
             startActivity(intent);
         });
     }
