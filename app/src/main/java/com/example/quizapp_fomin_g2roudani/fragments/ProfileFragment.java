@@ -7,13 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.quizapp_fomin_g2roudani.AdminDashboardActivity;
+import com.example.quizapp_fomin_g2roudani.EditProfileActivity;
 import com.example.quizapp_fomin_g2roudani.MainActivity;
 import com.example.quizapp_fomin_g2roudani.R;
 import com.example.quizapp_fomin_g2roudani.auth.AuthTokenManager;
@@ -48,10 +48,19 @@ public class ProfileFragment extends Fragment {
         setupAdminAccess();
 
         view.findViewById(R.id.btnLogout).setOnClickListener(v -> logout());
-        view.findViewById(R.id.btnEditProfile).setOnClickListener(v -> 
-            Toast.makeText(getActivity(), "Bientôt disponible", Toast.LENGTH_SHORT).show());
+        view.findViewById(R.id.btnEditProfile).setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), EditProfileActivity.class);
+            startActivity(intent);
+        });
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Rafraîchir les informations au retour de l'activité d'édition
+        setupProfile();
     }
 
     private void setupProfile() {

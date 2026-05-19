@@ -67,7 +67,6 @@ public class HomeFragment extends Fragment {
         view.findViewById(R.id.btnStartQuizHome).setOnClickListener(v -> 
             startActivity(new Intent(getActivity(), SelectLevel.class)));
 
-        // ✅ Navigation vers MapActivity
         view.findViewById(R.id.btnOpenMapHome).setOnClickListener(v -> 
             startActivity(new Intent(getActivity(), MapActivity.class)));
 
@@ -77,6 +76,13 @@ public class HomeFragment extends Fragment {
         fetchStats();
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Refresh UI to show updated name if changed
+        setupUserInfo();
     }
 
     private void setupUserInfo() {

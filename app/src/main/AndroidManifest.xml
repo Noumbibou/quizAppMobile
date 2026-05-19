@@ -30,6 +30,13 @@
             android:label="@string/map_title"
             android:theme="@style/Theme.QuizApp_Fomin_G2Roudani" />
 
+        <!-- ✅ Activité Édition de Profil -->
+        <activity
+            android:name=".EditProfileActivity"
+            android:exported="false"
+            android:label="Modifier le profil"
+            android:theme="@style/Theme.QuizApp_Fomin_G2Roudani" />
+
         <!-- ✅ Structure Administration -->
         <activity
             android:name=".AdminDashboardActivity"
