@@ -73,4 +73,7 @@ L'application utilise un flux `ImageAnalysis` de **CameraX** lié à **ML Kit** 
 - **Développeur** : [Votre Nom / Équipe]
 
 ---
+## Demonstration vidéo
+-pour l'interface admin: https://github.com/Noumbibou/quizAppMobile/releases/download/v1.0/admin.mp4
+-pour l'interface user: https://github.com/Noumbibou/quizAppMobile/releases/download/v1.0/user.mp4
 *Ce projet a été réalisé dans le cadre du module Développement Mobile.*
