@@ -21,7 +21,7 @@
         <!-- ✅ API Key pour Google Maps -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAKomqYTzqfKetcxzgxXLDn46_gYELKuYc" />
+            android:value="VOTRE_CLE_API_GOOGLE_MAPS" />
 
         <!-- ✅ Activité Carte Dédiée -->
         <activity
